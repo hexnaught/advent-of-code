@@ -1,6 +1,5 @@
 use std::env;
-use std::fmt::Debug;
-use std::str::FromStr;
+use aoc_lib;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -13,20 +12,18 @@ fn main() {
     let input_two = &args[2];
     println!("Reading File {:?}", input_one);
 
-    let input_one_vec = match read_all::<i32>(input_one) {
+    let input_one_vec = match aoc_lib::read_file_lines::<i32>(input_one) {
         Ok(contents) => contents,
         Err(error) => panic!("Problem reading the file contents: {:?}", error),
     };
 
-    let input_two_vec = match read_all::<i32>(input_two) {
+    let input_two_vec = match aoc_lib::read_file_lines::<i32>(input_two) {
         Ok(contents) => contents,
         Err(error) => panic!("Problem reading the file contents: {:?}", error),
     };
 
     part_one(input_one_vec.clone());
     part_two(input_two_vec.clone());
-
-    // bootstrap::<i32>(input_one, &part_one);
 }
 
 fn part_one(input_as_num: Vec<i32>) {
@@ -55,24 +52,4 @@ fn part_two(input_as_num: Vec<i32>) {
     }
 
     println!("Increases: {}", increases)
-}
-
-fn bootstrap<T: FromStr>(input_file_path: &str, f: &dyn Fn(&Vec<T>))
-where
-    <T as FromStr>::Err: Debug,
-{
-    let input = match read_all::<T>(input_file_path) {
-        Ok(contents) => contents,
-        Err(error) => panic!("Problem reading the file contents: {:?}", error),
-    };
-
-    f(&input)
-}
-
-fn read_all<T: FromStr>(file_name: &str) -> Result<Vec<T>, <T as FromStr>::Err> {
-    std::fs::read_to_string(file_name)
-        .expect("file not found!")
-        .lines()
-        .map(|x| x.parse())
-        .collect()
 }
